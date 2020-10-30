@@ -3,24 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Assignment
 {
     class Program
     {
-        //static readonly string[] IGNORE = { ".svn", "Logs", "bin", "obj" };
-        //string currentDir = System.IO.Directory.GetCurrentDirectory();
-        //static readonly string scanDir = "E:\\DotNetProjects\\SM3\\ClientBackend";
-
         static readonly string KEYWORD = "TODO";
         static readonly List<string> files = new List<string>();
         static string[] IGNORE;
         static string scanDir;
-        
 
         static void ThreadProc(Object data)
         {
@@ -125,7 +117,9 @@ namespace Assignment
             t1.Join();
             */
             
-            Console.WriteLine("Main thread: Scanning done");
+            Console.WriteLine("Main thread: Scanning done. Please Enter key to exit.");
+            Console.Read(); // Get string from user
+            Environment.Exit(0);
         }
 
         static void ListDirectories(string currDir, List<string> list)
@@ -150,6 +144,7 @@ namespace Assignment
                     }
                 } catch
                 {
+                    //* Catch any exceptions and continue
                     continue;
                 }
 
