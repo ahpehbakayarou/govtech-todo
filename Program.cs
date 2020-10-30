@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,27 +12,6 @@ namespace Assignment
         static readonly List<string> files = new List<string>();
         static string[] IGNORE;
         static string scanDir;
-
-        static void ThreadProc(Object data)
-        {
-            List<string> files;
-            try {
-                files = ((IEnumerable)data).Cast<string>().ToList();
-                foreach (var dir in files)
-                {
-                    using var sr = new StreamReader(dir);
-                    var content = sr.ReadToEnd();
-
-                    if (content.Contains(KEYWORD))
-                    {
-                        Console.WriteLine($"dir:{dir}");
-                    }
-                }
-            }
-            catch (Exception e) {
-                Console.WriteLine("Unable to cast to List<string>: ", e.Message);
-            }
-        }
 
         static void ReadConfigSettings()
         {
@@ -72,7 +50,7 @@ namespace Assignment
 
         static async Task ReadFiles()
         {
-            Console.WriteLine($"Count:{files.Count}");
+            //Console.WriteLine($"Count:{files.Count}");
             foreach (var dir in files)
             {
                 using (var sr = new StreamReader(dir))
@@ -95,27 +73,8 @@ namespace Assignment
             Console.WriteLine($"Main thread: Start scanning \"{scanDir}\".");
             ListDirectories(scanDir, files);
 
-            /*
-            await Task.Run(() => {
-                ListDirectories(scanDir, files);
-            });
-            */
-
             Console.WriteLine($"Main thread: Finish scanning, start reading {files.Count} files.");
             await ReadFiles();
-
-            /*
-            Thread t1 = new Thread(ThreadProc);
-            t1.Start(files);
-
-            for (int i = 0; i < 4; i++)
-            {
-                Console.WriteLine("Main thread: Do some work.");
-                Thread.Sleep(0);
-            }
-
-            t1.Join();
-            */
             
             Console.WriteLine("Main thread: Scanning done. Please Enter key to exit.");
             Console.Read(); // Get string from user
@@ -124,7 +83,7 @@ namespace Assignment
 
         static void ListDirectories(string currDir, List<string> list)
         {
-            Console.WriteLine($"Scanning {currDir}");
+            //Console.WriteLine($"Scanning {currDir}");
             List<string> dirs = new List<string>(Directory.EnumerateFileSystemEntries(currDir)); 
             foreach (var dir in dirs)
             {
