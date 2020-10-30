@@ -1,0 +1,2 @@
+﻿Path=E:\\DotNetProjects\\SM3\\ClientBackend
+Ignore=.svn;Logs;bin;obj
