@@ -83,44 +83,41 @@ namespace Assignment
 
         static void ListDirectories(string currDir, List<string> list)
         {
-            //Console.WriteLine($"Scanning {currDir}");
-            List<string> dirs = new List<string>(Directory.EnumerateFileSystemEntries(currDir)); 
-            foreach (var dir in dirs)
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue(currDir);
+            while (queue.Count > 0)
             {
-                if (IGNORE.Contains(dir.Substring(dir.Length - 4))) continue; //ignore file/folder name extension
+                string path = queue.Dequeue();
+                foreach (string subDir in Directory.GetDirectories(path))
+                {
+                    if (IGNORE.Contains(subDir.Substring(subDir.Length - 4))) continue; //ignore file/folder name extension
 
-                try
-                {
-                    if (!IsDirectory(dir))
-                    {
-                        if (!IsBinaryFile(dir))
-                        {
-                            // If file, check if it is binary or text file
-                            //Console.WriteLine(IsBinaryFile(dir) ? $"{dir} is binary file" : $"{dir} is not binary file");
-                            list.Add(dir);
-                        }
-                        continue;
-                    }
-                } catch
-                {
-                    //* Catch any exceptions and continue
-                    continue;
+                    queue.Enqueue(subDir);
                 }
 
-                ListDirectories(dir, list);
-            }
-        }
+                string[] files = null;
+                try
+                {
+                    files = Directory.GetFiles(path);
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
 
-        private static bool IsDirectory(string path)
-        {
-            try
-            {
-                FileAttributes fa = File.GetAttributes(path);
-                return (fa & FileAttributes.Directory) != 0;
-            }
-            catch
-            {
-                throw new Exception();
+                if (files != null)
+                {
+                    for (int i=0; i < files.Length; i++)
+                    {
+                        if (IGNORE.Contains(files[i].Substring(files[i].Length - 4))) continue; //ignore file/folder name extension
+
+                        if (!IsBinaryFile(files[i]))
+                        {
+                            // If file, check if it is binary or text file
+                            list.Add(files[i]);
+                        }
+                    }
+                }
             }
         }
 
