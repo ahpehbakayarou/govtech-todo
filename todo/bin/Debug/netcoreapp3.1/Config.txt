@@ -1,2 +1,0 @@
-﻿Path=E:\\
-Ignore=.svn;Logs;bin;obj
