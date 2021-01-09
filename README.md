@@ -1,20 +1,19 @@
 # Govtech-todo
 
-This is a GovTech assignment to create a script/application that scans a specific directory and returns all the files that contains the word "TODO".\
+This is a GovTech assignment to create a script/application that scans a specific directory and returns all the files that contains the word "TODO".
 
-Application is a console programs written in C# using Microsoft Visual Studio 2019. Main implementation can be found in the todo\Program.cs file.
+Application is a console application written in C# using Microsoft Visual Studio 2019. Main implementation can be found in the todo\Program.cs file.
 
 ## Build Instruction
-Application is written using Visual Studio 2019 running in .NetCore 3.1.
-Open the Assignment.sln in Visual Studio 2019 to compile and run
+Application is built in .NetCore 3.1 can be compiled in Visual Studio 2019.
+Open the Assignment.sln in Visual Studio 2019 to compile and execute.
 
 There is a self contain version in the executable folder built for win x64 environment
 
 ## Usage
 <img src="https://github.com/ahpehgit/govtech-todo/blob/main/demo.gif" width="450px">
-<br>
 
-Run the application and a menu option will be shown:
+Start the application and a menu option will be shown:
  - 1 Change scan directory
  - 2 Scan directory
  - 3 Exit
