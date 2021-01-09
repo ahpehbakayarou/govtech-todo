@@ -1,0 +1,4 @@
+.git/
+.vs/
+**/obj/
+todo-unit-test/bin/
