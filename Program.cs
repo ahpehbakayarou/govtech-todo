@@ -3,20 +3,63 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Assignment.Enums;
 
 namespace Assignment
 {
-    class Program
+    public class Enums
+    {
+        public enum ReadConfigStatus : ushort
+        {
+            CONFIG_FILE_NOT_FOUND = 1,
+            PATH_NOT_FOUND,
+            IGNORE_NOT_FOUND,
+            OK,
+        }
+    }
+
+    public class Program
     {
         static readonly string KEYWORD = "TODO";
         static readonly List<string> files = new List<string>();
         static string[] IGNORE;
         static string scanDir;
+        static readonly string CONFIG_FILE = "./Config.txt";
 
-        static void ReadConfigSettings()
+        //* -----------------------------------------------------------------------------------------------
+        //* Public
+        //* -----------------------------------------------------------------------------------------------
+        public static bool ChangeDirectory(string input)
         {
+            if (input == "")
+            {
+                scanDir = Directory.GetCurrentDirectory();
+                WriteConfigSetting("Path", scanDir);
+            }
+            else if (!Directory.Exists(input))
+            {
+                Console.WriteLine("Directory not found");
+                return false;
+            }
+            else
+            {
+                scanDir = input;
+                WriteConfigSetting("Path", scanDir);
+            }
+
+            return true;
+        }
+
+        public static ReadConfigStatus ReadConfigSettings(string configFile = "./Config.txt")
+        {
+            if (!File.Exists(configFile))
+            {
+                Console.WriteLine($"Error: Config File not found");
+                return ReadConfigStatus.CONFIG_FILE_NOT_FOUND;
+            }
+
             IDictionary<string, string> settings = new Dictionary<string, string>();
-            using (var sr = new StreamReader("./Config.txt"))
+            using (var sr = new StreamReader(configFile))
             {
                 string line;
                 while ((line = sr.ReadLine()) != null)
@@ -29,12 +72,12 @@ namespace Assignment
             if (!settings.TryGetValue("Path", out scanDir))
             {
                 Console.WriteLine("Error: Config does not contain the Path location to scan the files");
-                Environment.Exit(0);
+                return ReadConfigStatus.PATH_NOT_FOUND;
             };
 
             if (!Directory.Exists(scanDir)) {
                 Console.WriteLine($"Error: Path location \"{scanDir}\" to scan the files does not exists");
-                Environment.Exit(0);
+                return ReadConfigStatus.PATH_NOT_FOUND;
             }
 
             if (settings.TryGetValue("Ignore", out string ignoreString))
@@ -44,13 +87,34 @@ namespace Assignment
             else
             {
                 Console.WriteLine("Error: Config does not contain the ignore list");
-                Environment.Exit(0);
+                return ReadConfigStatus.IGNORE_NOT_FOUND;
             }
+
+            return ReadConfigStatus.OK;
+        }
+
+        //* -----------------------------------------------------------------------------------------------
+        //* Private
+        //* -----------------------------------------------------------------------------------------------
+
+        static void WriteConfigSetting(string key, string value)
+        {
+            string[] arrLine = File.ReadAllLines(CONFIG_FILE);
+            for (int i=0; i<arrLine.Length; i++)
+            {
+                string[] settingPair = arrLine[i].Split('=');
+                if (key == settingPair[0])
+                {
+                    settingPair[1] = value;
+                    arrLine[i] = String.Join("=", settingPair);
+                    break;
+                }
+            }
+            File.WriteAllLines(CONFIG_FILE, arrLine);
         }
 
         static async Task ReadFiles()
         {
-            //Console.WriteLine($"Count:{files.Count}");
             foreach (var dir in files)
             {
                 using (var sr = new StreamReader(dir))
@@ -58,7 +122,7 @@ namespace Assignment
                     var content = await sr.ReadToEndAsync();
                     if (content.Contains(KEYWORD))
                     {
-                        Console.WriteLine($"dir:{dir}");
+                        Console.WriteLine($"Found :{dir}");
                     }
                 }
             }
@@ -68,16 +132,56 @@ namespace Assignment
         {
             // Get current directory
             // Loop to get all files under direcotry 
-            // For each file in directory read file to find TODO           
-            ReadConfigSettings();
-            Console.WriteLine($"Main thread: Start scanning \"{scanDir}\".");
-            ListDirectories(scanDir, files);
+            // For each file in directory read file to find TODO
+            if (ReadConfigSettings() != ReadConfigStatus.OK)
+            {
+                Environment.Exit(0);
+            }
 
-            Console.WriteLine($"Main thread: Finish scanning, start reading {files.Count} files.");
-            await ReadFiles();
-            
-            Console.WriteLine("Main thread: Scanning done. Please Enter key to exit.");
-            Console.Read(); // Get string from user
+            string input;
+            do
+            {
+                Console.WriteLine("1. Change scan directory");
+                Console.WriteLine($"2. Scan directory ({scanDir})");
+                Console.WriteLine("3. Exit");
+                Console.Write("Enter choice: ");
+
+                input = Console.ReadLine();
+                try
+                {
+                    int choice = Convert.ToInt32(input);
+                    switch(choice)
+                    {
+                        case 1:
+                            {
+                                Console.Write("Enter directory (blank set to current directory): ");
+                                string inputDirectory = Console.ReadLine();
+                                ChangeDirectory(inputDirectory);
+                                break;
+                            }
+                        case 2:
+                            {
+                                Console.WriteLine($"Start scanning \"{scanDir}\".");
+                                ListDirectories(scanDir, files);
+                                Console.WriteLine($"Finish scanning, start reading {files.Count} files.");
+                                await ReadFiles();
+
+                                Console.WriteLine("Scanning completed.");
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid choice");
+                }
+                
+            } while (input != "3");
+
             Environment.Exit(0);
         }
 
@@ -121,7 +225,7 @@ namespace Assignment
             }
         }
 
-        private static bool IsBinaryFile(string path)
+        static bool IsBinaryFile(string path)
         {
             try
             {

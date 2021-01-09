@@ -1,2 +1,2 @@
-﻿Path=E:\\DotNetProjects\\SM3\\ClientBackend
+﻿Path=E:\\DotNetProjects\\SM3\\Git\\ClientBackend
 Ignore=.svn;Logs;bin;obj
