@@ -11,6 +11,9 @@ Open the Assignment.sln in Visual Studio 2019 to compile and run
 There is a self contain version in the executable folder built for win x64 environment
 
 ## Usage
+<img src="https://github.com/ahpehgit/govtech-todo/blob/main/demo.gif" width="450px">
+<br>
+
 Run the application and a menu option will be shown:
  - 1 Change scan directory
  - 2 Scan directory
