@@ -1,2 +1,0 @@
-﻿Path=E:\\DotNetProjects\\SM3\\Git\\ClientBackend
-Ignore=.svn;Logs;bin;obj
