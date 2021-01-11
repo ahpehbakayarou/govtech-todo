@@ -18,15 +18,15 @@ Start the application and a menu option will be shown:
  - 2 Scan directory
  - 3 Exit
  
-1. can change the directory to scan the files from
-2. will start scanning the directories for files
+1. change the directory to scan the files from
+2. start scanning the directories for files
 
 There is a Config.txt that contains 2 keys. Path and Ignore.
-- Path - Specifies the root directory in which you want to start scanning the files from.\
+- Path - Specifies the root directory in which you want to start scanning the files from.
 - Ignore - Specifies the extensions of files which you do not want to check. You can specify multiple extension type and separate them by semi-colons.
 
-Eg. \
-Path=E:\\SomeFolder\SomeSubFolder\
+Eg.
+Path=E:\\SomeFolder\SomeSubFolder
 Ignore=.svn;Logs;bin;obj
 
-Note: The Assignment.exe and the Config.txt need to be residing in the same folder in order to execute.
+Note: The Assignment.exe and the Config.txt need to be residing in the same folder.
